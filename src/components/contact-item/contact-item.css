@@ -8,9 +8,15 @@
 .list-group-item span[title="remove"]:hover{
     text-shadow: 0px 0px 15px #ff000060;
 }
+.edit:hover{
+    text-shadow: 0px 0px 15px #28a74560;
+}
 .list-group-item span[title="favourite"]{
     color:#FFD700 !important;
 }
 .list-group-item span[title="remove"]{
     color: #FF0000 !important;
+}
+.edit{
+    color: #28a745 !important;
 }
