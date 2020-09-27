@@ -1,29 +1,20 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom'
-import './edit-contact.css';
+import uuid from 'react-uuid';
+import './add-contact.css';
 
-export default class EditContact extends React.Component {
+export default class AddContact extends React.Component {
 
     state = {
-        id: this.props.currentContact.id,
-        name: this.props.currentContact.name,
-        address: this.props.currentContact.address,
-        phone: this.props.currentContact.phone,
-        email: this.props.currentContact.email,
-        gender: this.props.currentContact.gender,
-        avatar: this.props.currentContact.avatar,
+        id: uuid(),
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
+        gender: '',
+        avatar: '',
         isRedirect: false,
     };
-    componentDidMount() {
-        const radio = document.querySelectorAll('input.radio');
-        if (this.state.gender === 'men') {
-            radio[0].checked = true
-        }
-        else if (this.state.gender === 'women') {
-            radio[1].checked = true
-        }
-
-    }
     getAvatar = (event) => {
         this.setState({
             avatar: event.target.value,
@@ -60,7 +51,7 @@ export default class EditContact extends React.Component {
     onSendData = (event) => {
         event.preventDefault();
         const { id, name, address, phone, email, avatar, gender } = this.state;
-        this.props.confirmChanges(
+        this.props.onAddContact(
             id,
             name,
             address,
@@ -75,7 +66,7 @@ export default class EditContact extends React.Component {
     };
     render() {
         const { name, address, phone, email, avatar, gender } = this.state;
-        const { confirmChanges } = this.props;
+        const { onAddContact } = this.props;
         const URL = `https://api.randomuser.me/portraits/${gender}/${avatar}.jpg`;
         if (this.state.isRedirect) {
             return <Redirect to="/" />;
@@ -83,10 +74,10 @@ export default class EditContact extends React.Component {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-md-10 ">
-                        <h1>Edit contact</h1>
+                    <div className="col-md-8 ">
+                        <h1>Add contact</h1>
                         <form
-                            className="editForm d-flex flex-column"
+                            className="addForm d-flex flex-column"
                             onSubmit={this.onSendData}
                         >
                             <label>
@@ -160,13 +151,14 @@ export default class EditContact extends React.Component {
                                     required
                                     onChange={this.getAvatar} />
                             </label>
+                            <br />
                             <button className="btn btn-success" type="submit">
                                 Save chages
                             </button>
 
                         </form>
                     </div>
-                    <div className="col-md-2">
+                    <div className="col-md-4">
                         {avatar.length !== 0 ? (
                             <img
                                 className="rounded-circle mx-auto mt-5 d-block img-fluid edit_photo"

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import uuid from 'react-uuid';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
@@ -10,6 +9,7 @@ import './index.css';
 
 import ContactList from './components/contact-list/contact-list.js'
 import EditContact from './components/edit-contact/edit-contact.js'
+import AddContact from './components/add-contact/add-contact.js'
 import NotFound from './components/not-found/not-found.js'
 import Header from './components/header/header.js'
 
@@ -18,49 +18,7 @@ import Header from './components/header/header.js'
 class App extends React.Component {
   URL = "https://itstepproject-e9861.firebaseio.com/list.json";
   state = {
-    // list: [],
-    list: [
-      {
-        id: uuid(),
-        name: 'Mike Anamendolla',
-        address: '5842 Hillcrest Rd',
-        phone: '(870) 288-4149',
-        email: 'mike.ana@example.com',
-        gender: 'men',
-        avatar: 1,
-        favourite: false
-      },
-      {
-        id: uuid(),
-        name: 'Seth Frazier',
-        address: '7396 E North St',
-        phone: '(560) 180-4143',
-        email: 'seth.frazier@example.com',
-        gender: 'men',
-        avatar: 2,
-        favourite: false
-      },
-      {
-        id: uuid(),
-        name: 'Rosemary Porter',
-        address: '5267 Cackson St',
-        phone: '(497) 160-9776',
-        email: 'rosemary.porter@example.com',
-        gender: 'women',
-        avatar: 3,
-        favourite: false
-      },
-      {
-        id: uuid(),
-        name: 'Debbie Schmidt',
-        address: '3903 W Alexander Rd',
-        phone: '(867) 322-1852',
-        email: 'debbie.schmidt@example.com',
-        gender: 'women',
-        avatar: 4,
-        favourite: true
-      }
-    ],
+    list: [],
     currentContact: "",
     findContact: "",
   }
@@ -160,6 +118,31 @@ class App extends React.Component {
     });
     this.SaveDate(newList)
   }
+  onAddContact = (
+    id,
+    name,
+    address,
+    phone,
+    email,
+    avatar,
+    gender
+  ) => {
+    let newContact = {
+      id: id,
+      name: name,
+      address: address,
+      avatar: avatar,
+      phone: phone,
+      gender: gender,
+      email: email,
+      favourite: false,
+    };
+    const newList = [...this.state.list, newContact];
+    this.setState({
+      list: newList,
+    });
+    this.SaveDate(newList)
+  }
   render() {
     const showContacts = this.onShowContactList(
       this.state.list,
@@ -181,6 +164,11 @@ class App extends React.Component {
             <EditContact
               currentContact={this.state.currentContact}
               confirmChanges={this.confirmChanges}
+            />
+          )} />
+          <Route path="/addContact" exact render={() => (
+            <AddContact
+              onAddContact={this.onAddContact}
             />
           )} />
           <Route component={<NotFound />} />

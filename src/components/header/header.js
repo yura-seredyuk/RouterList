@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 import "./header.css";
 
 class Header extends React.Component {
@@ -32,7 +33,6 @@ class Header extends React.Component {
                             </ul>
                             <form
                                 className="form-inline my-2 my-lg-0 float-right"
-                            // onSubmit={this.onSearch}
                             >
                                 <input
                                     className="form-control mr-sm-2"
@@ -41,13 +41,6 @@ class Header extends React.Component {
                                     aria-label="Search"
                                     onChange={this.onSearch}
                                 />
-                                <button
-                                    className="btn btn-outline-success my-2 my-sm-0"
-                                    type="submit"
-                                // onClick={this.onSearch}
-                                >
-                                    Search
-                                </button>
                             </form>
                         </div>
                     </nav>
