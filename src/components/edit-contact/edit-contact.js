@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import './edit-contact.css';
 
 export default class EditContact extends React.Component {
@@ -12,34 +12,76 @@ export default class EditContact extends React.Component {
         email: this.props.currentContact.email,
         gender: this.props.currentContact.gender,
         avatar: this.props.currentContact.avatar,
-        favourite: this.props.currentContact.favourite,
+        isRedirect: false,
     };
 
-    handleInputChange = (event) => {
-        const target = event.target;
-        const value = target.type === 'radio' ? target.checked : target.value;
-        const name = target.name;
-
+    getAvatar = (event) => {
         this.setState({
-            [name]: value
+            avatar: event.target.value,
         });
-    }
+    };
+
+    getName = (event) => {
+        this.setState({
+            name: event.target.value,
+        });
+    };
+    getTelNumber = (event) => {
+        this.setState({
+            phone: event.target.value,
+        });
+    };
+    getAddress = (event) => {
+        this.setState({
+            address: event.target.value,
+        });
+    };
+
+    getEmail = (event) => {
+        this.setState({
+            email: event.target.value,
+        });
+    };
+    onSendData = (event) => {
+        event.preventDefault();
+        const { id, name, address, phone, email, avatar, gender } = this.state;
+        this.props.confirmChanges(
+            id,
+            name,
+            address,
+            phone,
+            email,
+            avatar,
+            gender
+        );
+        this.setState({
+            isRedirect: true,
+        });
+    };
     render() {
+        const { name, address, phone, email, avatar, gender } = this.state;
         const { confirmChanges } = this.props;
+        const URL = `https://api.randomuser.me/portraits/${gender}/${avatar}.jpg`;
+        if (this.state.isRedirect) {
+            return <Redirect to="/" />;
+        }
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col ">
+                    <div className="col-md-10 ">
                         <h1>Edit contact</h1>
-                        <form className="editForm">
+                        <form
+                            className="editForm"
+                            onSubmit={this.onSendData}
+                        >
                             <label>
                                 Name:
                             <input
                                     name="name"
                                     type="text"
                                     className="form-control"
-                                    value={this.state.name}
-                                    onChange={this.handleInputChange} />
+                                    value={name}
+                                    onChange={this.getName} />
                             </label>
                             <br />
                             <label>
@@ -48,8 +90,8 @@ export default class EditContact extends React.Component {
                                     name="address"
                                     type="text"
                                     className="form-control"
-                                    value={this.state.address}
-                                    onChange={this.handleInputChange} />
+                                    value={address}
+                                    onChange={this.getAddress} />
                             </label>
                             <br />
                             <label>
@@ -58,8 +100,8 @@ export default class EditContact extends React.Component {
                                     name="phone"
                                     type="text"
                                     className="form-control"
-                                    value={this.state.phone}
-                                    onChange={this.handleInputChange} />
+                                    value={phone}
+                                    onChange={this.getTelNumber} />
                             </label>
                             <br />
                             <label>
@@ -68,8 +110,8 @@ export default class EditContact extends React.Component {
                                     name="email"
                                     type="text"
                                     className="form-control"
-                                    value={this.state.email}
-                                    onChange={this.handleInputChange} />
+                                    value={email}
+                                    onChange={this.getEmail} />
                             </label>
                             <br />
                             <label>
@@ -78,7 +120,7 @@ export default class EditContact extends React.Component {
                                     name="gender"
                                     type="text"
                                     className="form-control"
-                                    value={this.state.gender}
+                                    value={gender}
                                     onChange={this.handleInputChange} />
                             </label>
                             <br />
@@ -90,22 +132,25 @@ export default class EditContact extends React.Component {
                                     min="1"
                                     max="99"
                                     className="form-control"
-                                    value={this.state.avatar}
-                                    onChange={this.handleInputChange} />
+                                    value={avatar}
+                                    onChange={this.getAvatar} />
                             </label>
                             <br />
-                            <Link
-                                to="/"
-                                onClick={confirmChanges(this.state)}
-                            >
-                                <button
-                                    className="btn btn-primary mb-2"
-                                >
-                                    Confirm changes
+                            <button className="btn btn-success" type="submit">
+                                Save chages
                             </button>
-                            </Link>
 
                         </form>
+                    </div>
+                    <div className="col-md-2">
+                        {avatar.length !== 0 ? (
+                            <img
+                                className="rounded-circle mx-auto d-block img-fluid edit_photo"
+                                src={URL}
+                            />
+                        ) : (
+                                <h3>No foto</h3>
+                            )}
                     </div>
                 </div>
             </div>

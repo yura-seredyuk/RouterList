@@ -16,7 +16,9 @@ import Header from './components/header/header.js'
 
 
 class App extends React.Component {
+  URL = "https://itstepproject-e9861.firebaseio.com/list.json";
   state = {
+    // list: [],
     list: [
       {
         id: uuid(),
@@ -62,6 +64,37 @@ class App extends React.Component {
     currentContact: "",
     findContact: "",
   }
+  componentDidMount() {
+    this.UpdateContactList();
+  }
+  UpdateContactList = () => {
+    fetch(this.URL)
+      .then(response => {
+        return response.json();
+      }).then((data) => {
+        if (data == null) {
+          this.setState({
+            list: [],
+          });
+        } else {
+          this.setState({
+            list: data,
+          });
+        }
+      }).catch((err) => console.log(err))
+  }
+
+  async SaveDate(newList) {
+    await fetch(this.URL, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(newList),
+    }).then((response) => {
+      console.log(response);
+    }).catch((err) => console.log(err));
+  };
   onSearch = (contactName) => {
     this.setState({
       findContact: contactName,
@@ -82,30 +115,50 @@ class App extends React.Component {
     this.setState({
       favourite: this.tmp
     });
+    this.SaveDate(this.state.list);
   };
   deleteItem = (id) => {
     const idx = this.state.list.findIndex((el) => el.id === id);
     const tmp = this.state.list.slice();
     tmp.splice(idx, 1);
-    this.setState({ list: tmp })
+    this.setState({ list: tmp });
+    this.SaveDate(this.state.list)
   };
 
   editContact = (id) => {
-    const idx = this.state.list.findIndex((el) => el.id === id);
-    const currentContact = this.state.list[idx];
+    const index = this.state.list.findIndex((elem) => elem.id === id);
+    const currentContact = this.state.list[index];
     this.setState({
       currentContact: currentContact,
     });
   };
-  confirmChanges = (currentContact) => {
-    console.log(currentContact.id)
-    const idx = this.state.list.findIndex((el) => el.id === currentContact.id);
-    console.log(idx);
-    const tmp = this.state.list.slice();
-
-    tmp[idx] = currentContact;
-    console.log(tmp[idx]);
-    // this.setState({ list: tmp })
+  confirmChanges = (
+    id,
+    name,
+    address,
+    phone,
+    email,
+    avatar,
+    gender
+  ) => {
+    const index = this.state.list.findIndex((elem) => elem.id === id);
+    let editedContact = {
+      id: id,
+      name: name,
+      address: address,
+      avatar: avatar,
+      phone: phone,
+      gender: gender,
+      email: email,
+      favourite: false,
+    };
+    const partOne = this.state.list.slice(0, index);
+    const partTwo = this.state.list.slice(index + 1);
+    const newList = [...partOne, editedContact, ...partTwo];
+    this.setState({
+      list: newList,
+    });
+    this.SaveDate(newList)
   }
   render() {
     const showContacts = this.onShowContactList(

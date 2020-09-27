@@ -9,6 +9,7 @@ class Header extends React.Component {
 
     onSearch = (event) => {
         const value = event.target.value;
+        // event.stopPropagation();
         this.setState({
             search: value,
         });
@@ -29,7 +30,10 @@ class Header extends React.Component {
                                     <Link className="nav-link" to="/addContact">Add contact</Link>
                                 </li>
                             </ul>
-                            <form className="form-inline my-2 my-lg-0 float-right">
+                            <form
+                                className="form-inline my-2 my-lg-0 float-right"
+                            // onSubmit={this.onSearch}
+                            >
                                 <input
                                     className="form-control mr-sm-2"
                                     type="search"
@@ -37,7 +41,13 @@ class Header extends React.Component {
                                     aria-label="Search"
                                     onChange={this.onSearch}
                                 />
-                                <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                                <button
+                                    className="btn btn-outline-success my-2 my-sm-0"
+                                    type="submit"
+                                // onClick={this.onSearch}
+                                >
+                                    Search
+                                </button>
                             </form>
                         </div>
                     </nav>
